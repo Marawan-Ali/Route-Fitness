@@ -13,5 +13,11 @@ namespace GymSystemDAL.Entities
         public int DurationDays { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
+
+        #region M:M RS Between Member Plan
+
+        public ICollection<Membership> Plans { get; set; }
+
+        #endregion
     }
 }

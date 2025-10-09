@@ -12,5 +12,24 @@ namespace GymSystemDAL.Entities
         // Will be used as JoinDate for Member => Configurations
 
         public string? Photo { get; set; }
+
+        #region 1:1 RS Between Member HealthRecord
+
+        // Nav Property
+        public HealthRecord HealthRecord { get; set; } // ONE
+
+        #endregion
+
+        #region M:M RS Between Member Plan
+
+        public ICollection<Membership> Memberships { get; set; }
+
+        #endregion
+
+        #region M:M RS Between Member Session
+
+        public ICollection<MemberSession> MemberSessions { get; set; }
+
+        #endregion
     }
 }
