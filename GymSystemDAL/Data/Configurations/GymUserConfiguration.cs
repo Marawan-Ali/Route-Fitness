@@ -45,6 +45,8 @@ namespace GymSystemDAL.Data.Configurations
                     .HasColumnType("varchar")
                     .HasMaxLength(30);
             });
+
+            builder.Ignore(X => X.UpdatedAt);
         }
     }
 }

@@ -28,6 +28,9 @@ namespace GymSystemDAL.Data.Configurations
             {
                 Tb.HasCheckConstraint("PlanDurationCheck", "DurationDays Between 1 and 365");
             });
+
+            builder.Ignore(X => X.CreatedAt);
+            builder.Ignore(X => X.UpdatedAt);
         }
     }
 }

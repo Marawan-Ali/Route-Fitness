@@ -17,6 +17,9 @@ namespace GymSystemDAL.Data.Configurations
             builder.Property(X => X.Name)
                 .HasColumnType("varchar")
                 .HasMaxLength(20);
+
+            builder.Ignore(X => X.CreatedAt);
+            builder.Ignore(X => X.UpdatedAt);
         }
     }
 }

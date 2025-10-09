@@ -18,8 +18,6 @@ namespace GymSystemDAL.Data.Configurations
                 .HasColumnName("HireDate")
                 .HasDefaultValueSql("GETDATE()");
 
-            builder.Ignore(X => X.UpdatedAt);
-
             base.Configure(builder);
         }
     }
