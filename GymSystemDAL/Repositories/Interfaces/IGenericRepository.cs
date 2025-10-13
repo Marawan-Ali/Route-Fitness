@@ -1,4 +1,5 @@
 ﻿using GymSystemDAL.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace GymSystemDAL.Repositories.Interfaces
         TEntity? GetById(int id);
 
         // GetAll
-        IEnumerable<TEntity> GetAll();
+        IEnumerable<TEntity> GetAll(Func<TEntity ,bool> condition = null);
 
         // Add
         int Add(TEntity entity);

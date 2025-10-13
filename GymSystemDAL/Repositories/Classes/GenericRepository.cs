@@ -33,9 +33,12 @@ namespace GymSystemDAL.Repositories.Classes
             return _dbContext.SaveChanges();
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll(Func<TEntity, bool> condition = null)
         {
-            return _dbContext.Set<TEntity>().ToList();
+            if (condition is null)
+                return _dbContext.Set<TEntity>().ToList();
+            else
+                return _dbContext.Set<TEntity>().Where(condition).ToList();
         }
 
         public TEntity? GetById(int id)

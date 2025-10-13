@@ -1,4 +1,4 @@
-﻿using GymSystemBLL.ViewModels;
+﻿using GymSystemBLL.ViewModels.MemberViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +10,7 @@ namespace GymSystemBLL.Services.Interfaces
     internal interface IMemberService
     {
         IEnumerable<MemberViewModel> GetAllMembers();
+
+        bool CreateMembers(CreateMemberViewModel createdMember);
     }
 }

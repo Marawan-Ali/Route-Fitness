@@ -1,5 +1,5 @@
 ﻿using GymSystemBLL.Services.Interfaces;
-using GymSystemBLL.ViewModels;
+using GymSystemBLL.ViewModels.MemberViewModels;
 using GymSystemDAL.Entities;
 using GymSystemDAL.Repositories.Interfaces;
 using System;
@@ -17,6 +17,44 @@ namespace GymSystemBLL.Services.Classes
         public MemberService(IGenericRepository<Member> memberRepository)
         {
             _memberRepository = memberRepository;
+        }
+
+        public bool CreateMembers(CreateMemberViewModel createdMember)
+        {
+            try
+            {
+                // Check if Email and Email are unique
+                var EmailExists = _memberRepository.GetAll(m => m.Email == createdMember.Email).Any();
+                var PhoneExists = _memberRepository.GetAll(m => m.Phone == createdMember.Phone).Any();
+                if (EmailExists || PhoneExists) return false;
+
+                var member = new Member()
+                {
+                    Name = createdMember.Name,
+                    Email = createdMember.Email,
+                    Phone = createdMember.Phone,
+                    DateOfBirth = createdMember.DateOfBirth,
+                    Gender = createdMember.Gender,
+                    Address = new Address()
+                    {
+                        BuildingNumber = createdMember.BuildingNumber,
+                        Street = createdMember.Street,
+                        City = createdMember.City
+                    },
+                    HealthRecord = new HealthRecord()
+                    {
+                        Weight = createdMember.HealthViewModel.Weight,
+                        Height = createdMember.HealthViewModel.Height,
+                        BloodType = createdMember.HealthViewModel.BloodType,
+                        Note = createdMember.HealthViewModel.Note
+                    }
+                };
+                return _memberRepository.Add(member) > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public IEnumerable<MemberViewModel> GetAllMembers()
@@ -59,5 +97,7 @@ namespace GymSystemBLL.Services.Classes
             });
             return MemberViewModels;
         }
+
+
     }
 }
