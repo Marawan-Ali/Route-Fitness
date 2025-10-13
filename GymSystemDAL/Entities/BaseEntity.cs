@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymSystemDAL.Entities
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         // Common Attributes
         public int Id { get; set; }
