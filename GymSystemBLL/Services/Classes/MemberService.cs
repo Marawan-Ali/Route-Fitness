@@ -14,20 +14,27 @@ namespace GymSystemBLL.Services.Classes
 {
     internal class MemberService : IMemberService
     {
+        #region Fields
+
         private readonly IGenericRepository<Member> _memberRepository;
         private readonly IGenericRepository<Membership> _membershipRepository;
         private readonly IPlanRepository _planRepository;
         private readonly IGenericRepository<HealthRecord> _healthRepository;
+        private readonly IGenericRepository<MemberSession> _memberSessionRepository;
+
+        #endregion
 
         public MemberService(IGenericRepository<Member> memberRepository,
             IGenericRepository<Membership> membershipRepository,
             IPlanRepository planRepository,
-            IGenericRepository<HealthRecord> healthRepository)
+            IGenericRepository<HealthRecord> healthRepository,
+            IGenericRepository<MemberSession> memberSessionRepository)
         {
             _memberRepository = memberRepository;
             _membershipRepository = membershipRepository;
             _planRepository = planRepository;
             _healthRepository = healthRepository;
+            _memberSessionRepository = memberSessionRepository;
         }
 
         public bool CreateMembers(CreateMemberViewModel createdMember)
@@ -188,6 +195,37 @@ namespace GymSystemBLL.Services.Classes
                 Member.Address.City = updatedMember.City;
                 Member.UpdatedAt = DateTime.Now;
                 return _memberRepository.Update(Member) > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool RemoveMember(int memberId)
+        {
+            var Member = _memberRepository.GetById(memberId);
+            if (Member is null) return false;
+
+            // Check if member has active sessions or not
+            var HasActiveMemberSessions = _memberSessionRepository
+                .GetAll(ms => ms.MemberId == memberId && ms.Session.StartDate > DateTime.Now).Any();
+
+            if (HasActiveMemberSessions) return false;
+
+            // Remove
+            // Handle to Cascade Action in Code
+            var Membership = _membershipRepository.GetAll(m => m.MemberId == memberId);
+            try
+            {
+                if (Membership.Any())
+                {
+                    foreach (var membership in Membership)
+                    {
+                        _membershipRepository.Delete(membership);
+                    }
+                }
+                return _memberRepository.Delete(Member) > 0;
             }
             catch (Exception)
             {

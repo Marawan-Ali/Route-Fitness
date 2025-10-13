@@ -23,6 +23,6 @@ namespace GymSystemDAL.Repositories.Interfaces
         int Update(TEntity entity);
 
         // Delete
-        int Delete(int id);
+        int Delete(TEntity entity);
     }
 }

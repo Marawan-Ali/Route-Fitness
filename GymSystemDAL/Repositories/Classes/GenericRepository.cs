@@ -24,11 +24,8 @@ namespace GymSystemDAL.Repositories.Classes
             return _dbContext.SaveChanges();
         }
 
-        public int Delete(int id)
+        public int Delete(TEntity entity)
         {
-            var entity = _dbContext.Set<TEntity>().Find(id);
-            if (entity is null) return 0;
-
             _dbContext.Set<TEntity>().Remove(entity);
             return _dbContext.SaveChanges();
         }
