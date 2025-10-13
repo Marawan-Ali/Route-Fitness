@@ -1,4 +1,6 @@
 using GymSystemDAL.Data.Contexts;
+using GymSystemDAL.Repositories.Classes;
+using GymSystemDAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymSystemPL
@@ -25,6 +27,8 @@ namespace GymSystemPL
             });
 
             #endregion
+
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
             var app = builder.Build();
