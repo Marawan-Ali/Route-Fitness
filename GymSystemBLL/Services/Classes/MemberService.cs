@@ -42,7 +42,7 @@ namespace GymSystemBLL.Services.Classes
             try
             {
                 // Check if Email and Email are unique
-                if (IsEmailExists(createdMember.Email) || IsPhoneExists(createdMember.Phone) return false;
+                if (IsEmailExists(createdMember.Email) || IsPhoneExists(createdMember.Phone)) return false;
 
                 var member = new Member()
                 {
@@ -183,7 +183,7 @@ namespace GymSystemBLL.Services.Classes
         {
             try
             {
-                if (IsEmailExists(updatedMember.Email) || IsPhoneExists(updatedMember.Phone) return false;
+                if (IsEmailExists(updatedMember.Email) || IsPhoneExists(updatedMember.Phone)) return false;
 
                 var Member = _memberRepository.GetById(id);
                 if (Member is null) return false;
