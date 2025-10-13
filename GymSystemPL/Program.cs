@@ -29,6 +29,7 @@ namespace GymSystemPL
             #endregion
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(IPlanRepository), typeof(PlanRepository));
 
 
             var app = builder.Build();
