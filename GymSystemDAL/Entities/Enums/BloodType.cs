@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymSystemDAL.Entities.Enums
 {
-    internal enum BloodType
+    public enum BloodType
     {
         OPositive = 1,
         ONegative,
