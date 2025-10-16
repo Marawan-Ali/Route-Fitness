@@ -35,7 +35,7 @@ namespace GymSystemBLL.Services.Classes
                 if (createdSession.Capacity < 0 || createdSession.Capacity > 25) return false;
 
                 var SessionEntity = _mapper.Map<Session>(createdSession);
-                _unitOfWork.GetRepository<Session>().Add(SessionEntity);
+                _unitOfWork.SessionRepository.Add(SessionEntity);
                 return _unitOfWork.SaveChanges() > 0;
             }
             catch (Exception)
@@ -85,6 +85,37 @@ namespace GymSystemBLL.Services.Classes
             return MappedSession;
         }
 
+        public UpdateSessionViewModel? GetSessionToUpdate(int sessionId)
+        {
+            var Session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
+
+            if (!IsSessionAvailableForUpdate(Session)) return null;
+
+            return _mapper.Map<UpdateSessionViewModel>(Session);
+        }
+
+        public bool UpdateSession(UpdateSessionViewModel updatedSession, int sessionId)
+        {
+            try
+            {
+                var Session = _unitOfWork.SessionRepository.GetById(sessionId);
+                if (!IsSessionAvailableForUpdate(Session!)) return false;
+                if (!IsTrainerExists(updatedSession.TrainerId)) return false;
+                if (!IsDateTimeValid(updatedSession.StartDate, updatedSession.EndDate)) return false;
+
+                _mapper.Map(updatedSession, Session);
+                Session!.UpdatedAt = DateTime.Now;
+
+                _unitOfWork.SessionRepository.Update(Session);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         #region HelperMethods
 
         private bool IsTrainerExists(int trainerId)
@@ -100,6 +131,21 @@ namespace GymSystemBLL.Services.Classes
         private bool IsDateTimeValid(DateTime startDate, DateTime endDate)
         {
             return startDate < endDate;
+        }
+
+        private bool IsSessionAvailableForUpdate(Session session)
+        {
+            if (session == null) return false;
+
+            // If Session Completed => cannot Update
+            if (session.EndDate < DateTime.Now) return false;
+            // If Session Started => cannot Update
+            if (session.StartDate <= DateTime.Now) return false;
+            // If Session has Active Booking => cannot Update
+            var ActiveBookings = _unitOfWork.SessionRepository.GetCountOfBookedSlots(session.Id);
+            if (ActiveBookings > 0) return false;
+
+            return true;
         }
 
         #endregion
