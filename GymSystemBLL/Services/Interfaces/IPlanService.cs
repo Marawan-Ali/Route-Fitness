@@ -11,5 +11,7 @@ namespace GymSystemBLL.Services.Interfaces
     {
         IEnumerable<PlanViewModel> GetAllPlans();
         PlanViewModel? GetPlanById(int id);
+        UpdatePlanViewModel? GetPlanToUpdate(int planId);
+        bool UpdatePlan(int planId, UpdatePlanViewModel updatedPlan);
     }
 }

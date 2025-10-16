@@ -52,5 +52,51 @@ namespace GymSystemBLL.Services.Classes
                 IsActive = Plan.IsActive
             };
         }
+
+        public UpdatePlanViewModel? GetPlanToUpdate(int planId)
+        {
+            var Plan = _unitOfWork.GetRepository<Plan>().GetById(planId);
+            // Check Active Memberships
+            if (Plan is null || Plan.IsActive == false || HasActiveMembership(planId)) return null;
+            
+            return new UpdatePlanViewModel()
+            {
+                Name = Plan.Name,
+                Description = Plan.Description,
+                DurationDays = Plan.DurationDays,
+                Price = Plan.Price
+            };
+        }
+
+        public bool UpdatePlan(int planId, UpdatePlanViewModel updatedPlan)
+        {
+            var Plan = _unitOfWork.GetRepository<Plan>().GetById(planId);
+            if (Plan is null || Plan.IsActive == false || HasActiveMembership(planId)) return false;
+
+            try
+            {
+                // Tuples [C# new Feature]
+                (Plan.Name, Plan.Description, Plan.DurationDays, Plan.Price, Plan.UpdatedAt) =
+                    (updatedPlan.Name, updatedPlan.Description, updatedPlan.DurationDays, updatedPlan.Price, DateTime.Now);
+
+                _unitOfWork.GetRepository<Plan>().Update(Plan);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        #region Helper Methods
+
+        private bool HasActiveMembership(int planId)
+        {
+            var memberships = _unitOfWork.GetRepository<Membership>()
+                .GetAll(m => m.PlanId == planId && m.Status == "Active");
+            return memberships.Any();
+        }
+
+        #endregion
     }
 }
