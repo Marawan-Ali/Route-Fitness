@@ -25,7 +25,7 @@ namespace GymSystemBLL.ViewModels.TrainerViewModels
         public string Phone { get; set; } = null!;
 
         [Required(ErrorMessage = "Required !")]
-        public Specialities Specialties { get; set; } = null!;
+        public Specialities Specialties { get; set; }
 
         [Required(ErrorMessage = "Required !")]
         [DataType(DataType.Date)]
