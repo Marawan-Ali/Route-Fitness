@@ -22,6 +22,28 @@ namespace GymSystemBLL.Services.Classes
             _mapper = mapper;
         }
 
+        public bool CreateSession(CreateSessionViewModel createdSession)
+        {
+            try
+            {
+                // Check If Trainer exists
+                // Check If Category exists
+                // Check If StartDate < EndDate
+                if (!IsTrainerExists(createdSession.TrainerId)) return false;
+                if (!IsCategoryExists(createdSession.CategoryId)) return false;
+                if (!IsDateTimeValid(createdSession.StartDate, createdSession.EndDate)) return false;
+                if (createdSession.Capacity < 0 || createdSession.Capacity > 25) return false;
+
+                var SessionEntity = _mapper.Map<Session>(createdSession);
+                _unitOfWork.GetRepository<Session>().Add(SessionEntity);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public IEnumerable<SessionViewModel> GetAllSessions()
         {
             var Sessions = _unitOfWork.SessionRepository.GetAllSessionsWithTrainerAndCategory();
@@ -62,5 +84,24 @@ namespace GymSystemBLL.Services.Classes
             MappedSession.AvailableSlots = Session.Capacity - _unitOfWork.SessionRepository.GetCountOfBookedSlots(Session.Id);
             return MappedSession;
         }
+
+        #region HelperMethods
+
+        private bool IsTrainerExists(int trainerId)
+        {
+            return _unitOfWork.GetRepository<Trainer>().GetById(trainerId) != null;
+        }
+
+        private bool IsCategoryExists(int categoryId)
+        {
+            return _unitOfWork.GetRepository<Category>().GetById(categoryId) != null;
+        }
+
+        private bool IsDateTimeValid(DateTime startDate, DateTime endDate)
+        {
+            return startDate < endDate;
+        }
+
+        #endregion
     }
 }
