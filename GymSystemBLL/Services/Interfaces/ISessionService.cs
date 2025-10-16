@@ -10,5 +10,6 @@ namespace GymSystemBLL.Services.Interfaces
     internal interface ISessionService
     {
         IEnumerable<SessionViewModel> GetAllSessions();
+        SessionViewModel? GetSessionById(int sessionId);
     }
 }
