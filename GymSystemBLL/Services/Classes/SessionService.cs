@@ -116,6 +116,22 @@ namespace GymSystemBLL.Services.Classes
             }
         }
 
+        public bool RemoveSession(int sessionId)
+        {
+            try
+            {
+                var Session = _unitOfWork.SessionRepository.GetById(sessionId);
+                if (!IsSessionAvailableForDelete(Session!)) return false;
+
+                _unitOfWork.SessionRepository.Delete(Session!);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         #region HelperMethods
 
         private bool IsTrainerExists(int trainerId)
@@ -139,9 +155,24 @@ namespace GymSystemBLL.Services.Classes
 
             // If Session Completed => cannot Update
             if (session.EndDate < DateTime.Now) return false;
-            // If Session Started => cannot Update
-            if (session.StartDate <= DateTime.Now) return false;
+            // If Session is Ongoing => cannot Update
+            if (session.StartDate <= DateTime.Now && session.EndDate > DateTime.Now) return false;
             // If Session has Active Booking => cannot Update
+            var ActiveBookings = _unitOfWork.SessionRepository.GetCountOfBookedSlots(session.Id);
+            if (ActiveBookings > 0) return false;
+
+            return true;
+        }
+
+        private bool IsSessionAvailableForDelete(Session session)
+        {
+            if (session == null) return false;
+
+            // If Session Completed => cannot Delete
+            if (session.EndDate < DateTime.Now) return false;
+            // If Session Started => cannot Delete
+            if (session.StartDate <= DateTime.Now) return false;
+            // If Session has Active Booking => cannot Delete
             var ActiveBookings = _unitOfWork.SessionRepository.GetCountOfBookedSlots(session.Id);
             if (ActiveBookings > 0) return false;
 
