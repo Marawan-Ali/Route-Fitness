@@ -12,11 +12,11 @@ namespace GymSystemBLL.Services.Classes
 {
     internal class TrainerService : ITrainerService
     {
-        private readonly IGenericRepository<Trainer> _trainerRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TrainerService(IGenericRepository<Trainer> trainerRepository)
+        public TrainerService(IUnitOfWork unitOfWork)
         {
-            _trainerRepository = trainerRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public bool CreateTrainers(CreateTrainerViewModel createdTrainer)
@@ -39,7 +39,8 @@ namespace GymSystemBLL.Services.Classes
                         City = createdTrainer.City
                     }
                 };
-                return _trainerRepository.Add(trainer) > 0;
+                _unitOfWork.GetRepository<Trainer>().Add(trainer);
+                return _unitOfWork.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -49,7 +50,7 @@ namespace GymSystemBLL.Services.Classes
 
         public IEnumerable<TrainerViewModel> GetAllTrainers()
         {
-            var trainers = _trainerRepository.GetAll();
+            var trainers = _unitOfWork.GetRepository<Trainer>().GetAll();
             if (trainers is null || !trainers.Any()) return [];
 
             var trainerViewModels = trainers.Select(t => new TrainerViewModel()
@@ -65,7 +66,7 @@ namespace GymSystemBLL.Services.Classes
 
         public TrainerViewModel? GetTrainerDetails(int trainerId)
         {
-            var trainer = _trainerRepository.GetById(trainerId);
+            var trainer = _unitOfWork.GetRepository<Trainer>().GetById(trainerId);
             if (trainer is null) return null;
 
             var trainerViewModel = new TrainerViewModel()
@@ -84,7 +85,7 @@ namespace GymSystemBLL.Services.Classes
 
         public TrainerToUpdateViewModel? GetTrainerToUpdate(int trainerId)
         {
-            var trainer = _trainerRepository.GetById(trainerId);
+            var trainer = _unitOfWork.GetRepository<Trainer>().GetById(trainerId);
             if (trainer is null) return null;
 
             return new TrainerToUpdateViewModel()
@@ -104,13 +105,14 @@ namespace GymSystemBLL.Services.Classes
         {
             try
             {
-                var trainer = _trainerRepository.GetById(trainerId);
+                var trainer = _unitOfWork.GetRepository<Trainer>().GetById(trainerId);
                 if (trainer is null) return false;
 
                 var hasFutureSessions = trainer.TrainerSessions.Any(s => s.CreatedAt > DateTime.Now);
                 if (hasFutureSessions) return false;
 
-                return _trainerRepository.Delete(trainer) > 0;
+                _unitOfWork.GetRepository<Trainer>().Delete(trainer);
+                return _unitOfWork.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -124,7 +126,7 @@ namespace GymSystemBLL.Services.Classes
             {
                 if (IsEmailExists(updatedTrainer.Email) || IsPhoneExists(updatedTrainer.Phone)) return false;
 
-                var trainer = _trainerRepository.GetById(id);
+                var trainer = _unitOfWork.GetRepository<Trainer>().GetById(id);
                 if (trainer is null) return false;
 
                 trainer.Name = updatedTrainer.Name;
@@ -135,7 +137,8 @@ namespace GymSystemBLL.Services.Classes
                 trainer.Address.BuildingNumber = updatedTrainer.BuildingNumber;
                 trainer.Address.Street = updatedTrainer.Street;
                 trainer.Address.City = updatedTrainer.City;
-                return _trainerRepository.Update(trainer) > 0;
+                _unitOfWork.GetRepository<Trainer>().Update(trainer);
+                return _unitOfWork.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -147,12 +150,12 @@ namespace GymSystemBLL.Services.Classes
 
         private bool IsEmailExists(string email)
         {
-            return _trainerRepository.GetAll(m => m.Email == email).Any();
+            return _unitOfWork.GetRepository<Trainer>().GetAll(m => m.Email == email).Any();
         }
 
         private bool IsPhoneExists(string phone)
         {
-            return _trainerRepository.GetAll(m => m.Phone == phone).Any();
+            return _unitOfWork.GetRepository<Trainer>().GetAll(m => m.Phone == phone).Any();
         }
 
         #endregion

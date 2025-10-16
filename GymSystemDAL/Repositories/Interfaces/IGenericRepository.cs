@@ -17,12 +17,12 @@ namespace GymSystemDAL.Repositories.Interfaces
         IEnumerable<TEntity> GetAll(Func<TEntity ,bool> condition = null);
 
         // Add
-        int Add(TEntity entity);
+        void Add(TEntity entity);
 
         // Update
-        int Update(TEntity entity);
+        void Update(TEntity entity);
 
         // Delete
-        int Delete(TEntity entity);
+        void Delete(TEntity entity);
     }
 }
