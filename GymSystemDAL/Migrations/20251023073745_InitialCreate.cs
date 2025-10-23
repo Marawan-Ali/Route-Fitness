@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GymSystemDAL.Data.Migrations
+namespace GymSystemDAL.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -33,7 +33,7 @@ namespace GymSystemDAL.Data.Migrations
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Height = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BloodType = table.Column<int>(type: "int", nullable: false),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),

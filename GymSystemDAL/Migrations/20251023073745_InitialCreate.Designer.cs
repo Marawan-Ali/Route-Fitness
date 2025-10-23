@@ -4,16 +4,19 @@ using GymSystemDAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GymSystemDAL.Data.Migrations
+namespace GymSystemDAL.Migrations
 {
     [DbContext(typeof(GymSystemDbContext))]
-    partial class GymSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023073745_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +48,9 @@ namespace GymSystemDAL.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("BloodType")
-                        .HasColumnType("int");
+                    b.Property<string>("BloodType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(18,2)");
