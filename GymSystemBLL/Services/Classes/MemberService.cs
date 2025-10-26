@@ -205,8 +205,15 @@ namespace GymSystemBLL.Services.Classes
             if (Member is null) return false;
 
             // Check if member has active sessions or not
-            var HasActiveMemberSessions = _unitOfWork.GetRepository<MemberSession>()
-                .GetAll(ms => ms.MemberId == memberId && ms.Session.StartDate > DateTime.Now).Any();
+            //var HasActiveMemberSessions = _unitOfWork.GetRepository<MemberSession>()
+            //    .GetAll(ms => ms.MemberId == memberId && ms.Session.StartDate > DateTime.Now).Any();
+
+            // Get All Sessions Ids
+            var SessionIDs = _unitOfWork.GetRepository<MemberSession>()
+                .GetAll(X => X.MemberId == memberId).Select(X => X.SessionId);
+
+            var HasActiveMemberSessions = _unitOfWork.GetRepository<Session>()
+                .GetAll(X => SessionIDs.Contains(X.Id) && X.StartDate > DateTime.Now).Any();
 
             if (HasActiveMemberSessions) return false;
 
