@@ -9,9 +9,9 @@ namespace GymSystemBLL.ViewModels.SessionViewModels
     internal class SessionViewModel
     {
         public int Id { get; set; }
-        public string CategoryName { get; set; }
-        public string Description { get; set; }
-        public string TrainerName { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string TrainerName { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Capacity { get; set; }

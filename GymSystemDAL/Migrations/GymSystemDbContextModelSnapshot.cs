@@ -280,7 +280,7 @@ namespace GymSystemDAL.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("varchar");
 
-                    b.Property<int>("Specialities")
+                    b.Property<int>("Specialties")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

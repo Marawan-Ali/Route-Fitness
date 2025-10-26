@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GymSystemBLL.Services.Classes
 {
-    internal class TrainerService : ITrainerService
+    public class TrainerService : ITrainerService
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -31,7 +31,7 @@ namespace GymSystemBLL.Services.Classes
                     Email = createdTrainer.Email,
                     Phone = createdTrainer.Phone,
                     DateOfBirth = createdTrainer.DateOfBirth,
-                    Specialities = createdTrainer.Specialties,
+                    Specialties = createdTrainer.Specialties,
                     Address = new Address()
                     {
                         BuildingNumber = createdTrainer.BuildingNumber,
@@ -59,7 +59,7 @@ namespace GymSystemBLL.Services.Classes
                 Name = t.Name,
                 Email = t.Email,
                 Phone = t.Phone,
-                Specialties = t.Specialities.ToString()
+                Specialties = t.Specialties.ToString()
             });
             return trainerViewModels;
         }
@@ -75,10 +75,10 @@ namespace GymSystemBLL.Services.Classes
                 Name = trainer.Name,
                 Email = trainer.Email,
                 Phone = trainer.Phone,
-                Specialties = trainer.Specialities.ToString(),
+                Specialties = trainer.Specialties.ToString(),
                 DateOfBirth = trainer.DateOfBirth.ToShortDateString(),
                 Address = trainer.Address is not null ? $"{trainer.Address.BuildingNumber}, {trainer.Address.Street}, {trainer.Address.City}" : null,
-                JobTitle = $"{trainer.Specialities} Trainer"
+                JobTitle = $"{trainer.Specialties} Trainer"
             };
             return trainerViewModel;
         }
@@ -93,7 +93,7 @@ namespace GymSystemBLL.Services.Classes
                 Name = trainer.Name,
                 Email = trainer.Email,
                 Phone = trainer.Phone,
-                Specialties = trainer.Specialities,
+                Specialties = trainer.Specialties,
                 DateOfBirth = trainer.DateOfBirth,
                 BuildingNumber = trainer.Address.BuildingNumber,
                 Street = trainer.Address.Street,
@@ -108,7 +108,7 @@ namespace GymSystemBLL.Services.Classes
                 var trainer = _unitOfWork.GetRepository<Trainer>().GetById(trainerId);
                 if (trainer is null) return false;
 
-                var hasFutureSessions = trainer.TrainerSessions.Any(s => s.CreatedAt > DateTime.Now);
+                var hasFutureSessions = trainer.TrainerSessions?.Any(s => s.CreatedAt > DateTime.Now) == true;
                 if (hasFutureSessions) return false;
 
                 _unitOfWork.GetRepository<Trainer>().Delete(trainer);
@@ -124,7 +124,13 @@ namespace GymSystemBLL.Services.Classes
         {
             try
             {
-                if (IsEmailExists(updatedTrainer.Email) || IsPhoneExists(updatedTrainer.Phone)) return false;
+                var EmailExists = _unitOfWork.GetRepository<Trainer>()
+                    .GetAll(X => X.Email == updatedTrainer.Email && X.Id != id);
+
+                var PhoneExists = _unitOfWork.GetRepository<Trainer>()
+                    .GetAll(X => X.Phone == updatedTrainer.Phone && X.Id != id);
+
+                if (EmailExists.Any() || PhoneExists.Any()) return false;
 
                 var trainer = _unitOfWork.GetRepository<Trainer>().GetById(id);
                 if (trainer is null) return false;
@@ -132,7 +138,7 @@ namespace GymSystemBLL.Services.Classes
                 trainer.Name = updatedTrainer.Name;
                 trainer.Email = updatedTrainer.Email;
                 trainer.Phone = updatedTrainer.Phone;
-                trainer.Specialities = updatedTrainer.Specialties;
+                trainer.Specialties = updatedTrainer.Specialties;
                 trainer.DateOfBirth = updatedTrainer.DateOfBirth;
                 trainer.Address.BuildingNumber = updatedTrainer.BuildingNumber;
                 trainer.Address.Street = updatedTrainer.Street;

@@ -121,7 +121,7 @@ namespace GymSystemPL.Controllers
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("DataInvalid", "Check Data and Missing Fields !");
-                return View("Edit", updatedMember);
+                return View("MemberEdit", updatedMember);
             }
 
             bool Result = _memberService.UpdateMemberDetails(id, updatedMember);

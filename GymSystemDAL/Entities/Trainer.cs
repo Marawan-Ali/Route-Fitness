@@ -12,11 +12,11 @@ namespace GymSystemDAL.Entities
         // CreatedAt Column in BaseEntity
         // Will be used as HireDate for Trainer => Configurations
 
-        public Specialities Specialities { get; set; }
+        public Specialties Specialties { get; set; }
 
         #region 1:M RS Betweem Session Trainer
 
-        public ICollection<Session> TrainerSessions { get; set; }
+        public ICollection<Session>? TrainerSessions { get; set; }
 
         #endregion
     }

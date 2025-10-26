@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymSystemDAL.Migrations
 {
     [DbContext(typeof(GymSystemDbContext))]
-    [Migration("20251023073745_InitialCreate")]
+    [Migration("20251026205845_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -283,7 +283,7 @@ namespace GymSystemDAL.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("varchar");
 
-                    b.Property<int>("Specialities")
+                    b.Property<int>("Specialties")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

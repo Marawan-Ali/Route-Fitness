@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymSystemDAL.Entities.Enums
 {
-    public enum Specialities
+    public enum Specialties
     {
         GeneralFitness = 1,
         Yoga,
