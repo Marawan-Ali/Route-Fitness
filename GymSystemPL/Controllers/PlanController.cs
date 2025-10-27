@@ -1,5 +1,7 @@
 ﻿using GymSystemBLL.Services.Interfaces;
+using GymSystemBLL.ViewModels.PlanViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace GymSystemPL.Controllers
 {
@@ -38,6 +40,45 @@ namespace GymSystemPL.Controllers
                 return RedirectToAction("Index");
             }
             return View(Plan);
+        }
+
+        #endregion
+
+        #region Edit Plan
+
+        public ActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Id Cannot Be 0 or Negative Number !";
+                return RedirectToAction("Index");
+            }
+            var Plan = _planService.GetPlanToUpdate(id);
+            if (Plan == null)
+            {
+                TempData["ErrorMessage"] = "Plan Not Found !";
+                return RedirectToAction("Index");
+            }
+            return View(Plan);
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromRoute]int id,UpdatePlanViewModel updatedPlan)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("WrongData", "Check Data Again !");
+                return View(updatedPlan);
+            }
+            var Result = _planService.UpdatePlan(id, updatedPlan);
+            if (!Result)
+            {
+                TempData["ErrorMessage"] = "Failed To Update Plan !";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["SuccessMessage"] = "Plan Updated Successfully !";
+            return RedirectToAction(nameof(Index));
         }
 
         #endregion
