@@ -1,4 +1,5 @@
-﻿using GymSystemBLL.Services.Interfaces;
+﻿using GymSystemBLL.Services.Classes;
+using GymSystemBLL.Services.Interfaces;
 using GymSystemBLL.ViewModels.SessionViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -80,11 +81,64 @@ namespace GymSystemPL.Controllers
 
         #endregion
 
+        #region Edit Session
+
+        public ActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Id Cannot Be 0 or Negative Number !";
+                return RedirectToAction("Index");
+            }
+            var Session = _sessionService.GetSessionToUpdate(id);
+            if (Session == null)
+            {
+                TempData["ErrorMessage"] = "Session Not Found !";
+                return RedirectToAction("Index");
+            }
+
+            LoadDropDownForTrainers();
+            return View(Session);
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromRoute]int id,UpdateSessionViewModel updatedSession)
+        {
+            if (!ModelState.IsValid)
+            {
+                LoadDropDownForTrainers();
+                return View(updatedSession);
+            }
+
+            var Result = _sessionService.UpdateSession(updatedSession,id);
+            if (Result)
+            {
+                TempData["SuccessMessage"] = "Session Updated Successfully";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed To Update Session";
+                LoadDropDownForTrainers();
+                return View(updatedSession);
+            }
+        }
+
+        #endregion
+
         private void LoadDropDowns()
         {
+            LoadDropDownForTrainers();
+            LoadDropDownForCategories();
+        }
+        private void LoadDropDownForTrainers()
+        {
             var Trainers = _sessionService.GetTrainerForSessions();
-            var Categories = _sessionService.GetCategoryForSessions();
             ViewBag.Trainers = new SelectList(Trainers, "Id", "Name");
+        }
+        private void LoadDropDownForCategories()
+        {
+            var Categories = _sessionService.GetCategoryForSessions();
             ViewBag.Categories = new SelectList(Categories, "Id", "Name");
         }
     }
