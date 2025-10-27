@@ -82,5 +82,25 @@ namespace GymSystemPL.Controllers
         }
 
         #endregion
+
+        #region Soft Delete - Active/Inactive Plan
+
+        [HttpPost]
+        public ActionResult Activate(int id)
+        {
+            var Result = _planService.ToggleStatus(id);
+            if (Result)
+            {
+                TempData["SuccessMessage"] = "Plan Status Changed Successfully !";
+                return RedirectToAction(nameof(Index));
+            } 
+            else
+            {
+                TempData["ErrorMessage"] = "Failed To Change Plan Status !";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        #endregion
     }
 }
