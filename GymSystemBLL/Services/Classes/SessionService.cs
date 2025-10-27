@@ -132,6 +132,18 @@ namespace GymSystemBLL.Services.Classes
             }
         }
 
+        public IEnumerable<TrainerSelectViewModel> GetTrainerForSessions()
+        {
+            var Trainers = _unitOfWork.GetRepository<Trainer>().GetAll();
+            return _mapper.Map<IEnumerable<TrainerSelectViewModel>>(Trainers);
+        }
+
+        public IEnumerable<CategorySelectViewModel> GetCategoryForSessions()
+        {
+            var Categories = _unitOfWork.GetRepository<Category>().GetAll();
+            return _mapper.Map<IEnumerable<CategorySelectViewModel>>(Categories);
+        }
+
         #region HelperMethods
 
         private bool IsTrainerExists(int trainerId)
