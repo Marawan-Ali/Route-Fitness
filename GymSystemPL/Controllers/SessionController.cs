@@ -87,7 +87,7 @@ namespace GymSystemPL.Controllers
         {
             if (id <= 0)
             {
-                TempData["ErrorMessage"] = "Id Cannot Be 0 or Negative Number !";
+                TempData["ErrorMessage"] = "Invalid Session Id";
                 return RedirectToAction("Index");
             }
             var Session = _sessionService.GetSessionToUpdate(id);
@@ -126,6 +126,44 @@ namespace GymSystemPL.Controllers
 
         #endregion
 
+        #region Delete Session
+
+        public ActionResult Delete(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid Session Id";
+                return RedirectToAction("Index");
+            }
+            var Session = _sessionService.GetSessionById(id);
+            if(Session is null)
+            {
+                TempData["ErrorMessage"] = "Session Not Found !";
+                return RedirectToAction("Index");
+            }
+            ViewBag.SessionId = id;
+            return View(Session);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var Result = _sessionService.RemoveSession(id);
+            if (Result)
+            {
+                TempData["SuccessMessage"] = "Session Deleted Successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed To Delete Session";
+            }
+            return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        #region Helper Methods
+
         private void LoadDropDowns()
         {
             LoadDropDownForTrainers();
@@ -141,5 +179,7 @@ namespace GymSystemPL.Controllers
             var Categories = _sessionService.GetCategoryForSessions();
             ViewBag.Categories = new SelectList(Categories, "Id", "Name");
         }
+
+        #endregion
     }
 }

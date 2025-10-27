@@ -180,10 +180,10 @@ namespace GymSystemBLL.Services.Classes
         {
             if (session == null) return false;
 
-            // If Session Completed => cannot Delete
-            if (session.EndDate < DateTime.Now) return false;
-            // If Session Started => cannot Delete
-            if (session.StartDate <= DateTime.Now) return false;
+            // If Session Upcoming => cannot Delete
+            if (session.StartDate > DateTime.Now) return false;
+            // If Session OnGoing => cannot Delete
+            if (session.StartDate <= DateTime.Now && session.EndDate >= DateTime.Now) return false;
             // If Session has Active Booking => cannot Delete
             var ActiveBookings = _unitOfWork.SessionRepository.GetCountOfBookedSlots(session.Id);
             if (ActiveBookings > 0) return false;
