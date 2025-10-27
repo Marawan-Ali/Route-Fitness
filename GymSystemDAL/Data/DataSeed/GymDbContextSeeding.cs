@@ -21,7 +21,7 @@ namespace GymSystemDAL.Data.DataSeed
 
                 if (!HasPlans)
                 {
-                    var Plans = LoadDataFromJsonFiles<Plan> ("plans.json");
+                    var Plans = LoadDataFromJsonFiles<Plan>("plans.json");
                     if (Plans.Any())
                     {
                         dbContext.Plans.AddRange(Plans);
@@ -46,9 +46,10 @@ namespace GymSystemDAL.Data.DataSeed
 
         private static List<T> LoadDataFromJsonFiles<T>(string FileName)
         {
-            var FilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", FileName);
+            var projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\.."));
+            var FilePath = Path.Combine(projectRoot, "wwwroot", "Files", FileName);
 
-            if (File.Exists(FilePath))
+            if (!File.Exists(FilePath))
             {
                 throw new FileNotFoundException();
             }
