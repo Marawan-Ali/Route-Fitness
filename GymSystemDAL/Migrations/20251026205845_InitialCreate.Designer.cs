@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GymSystemDAL.Data.Migrations
+namespace GymSystemDAL.Migrations
 {
     [DbContext(typeof(GymSystemDbContext))]
-    [Migration("20251009075810_InitialCreate")]
+    [Migration("20251026205845_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,8 +48,9 @@ namespace GymSystemDAL.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("BloodType")
-                        .HasColumnType("int");
+                    b.Property<string>("BloodType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(18,2)");
@@ -282,7 +283,7 @@ namespace GymSystemDAL.Data.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("varchar");
 
-                    b.Property<int>("Specialities")
+                    b.Property<int>("Specialties")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

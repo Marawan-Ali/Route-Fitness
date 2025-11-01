@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GymSystemDAL.Data.Migrations
+namespace GymSystemDAL.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -33,7 +33,7 @@ namespace GymSystemDAL.Data.Migrations
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Height = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BloodType = table.Column<int>(type: "int", nullable: false),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -77,7 +77,7 @@ namespace GymSystemDAL.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Specialities = table.Column<int>(type: "int", nullable: false),
+                    Specialties = table.Column<int>(type: "int", nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
