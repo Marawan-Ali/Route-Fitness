@@ -1,4 +1,5 @@
 using GymSystemBLL;
+using GymSystemBLL.Services.AttachmentService;
 using GymSystemBLL.Services.Classes;
 using GymSystemBLL.Services.Interfaces;
 using GymSystemDAL.Data.Contexts;
@@ -42,7 +43,7 @@ namespace GymSystemPL
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
-
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 
             var app = builder.Build();
 
