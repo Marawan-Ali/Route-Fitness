@@ -4,8 +4,10 @@ using GymSystemBLL.Services.Classes;
 using GymSystemBLL.Services.Interfaces;
 using GymSystemDAL.Data.Contexts;
 using GymSystemDAL.Data.DataSeed;
+using GymSystemDAL.Entities;
 using GymSystemDAL.Repositories.Classes;
 using GymSystemDAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymSystemPL
@@ -37,13 +39,26 @@ namespace GymSystemPL
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-            builder.Services.AddAutoMapper(X=>X.AddProfile(new MappingProfiles()));
+            builder.Services.AddAutoMapper(X => X.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<ITrainerService, TrainerService>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(Config =>
+            {
+                Config.Password.RequiredLength = 6;
+                Config.Password.RequireLowercase = true;
+                Config.Password.RequireUppercase = true;
+                Config.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<GymSystemDbContext>();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            })
 
             var app = builder.Build();
 
@@ -61,6 +76,10 @@ namespace GymSystemPL
             }
 
             GymDbContextSeeding.SeedData(dbContext);
+
+            var roleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = Scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            IdentityDbContextSeeding.SeedData(roleManager, userManager);
 
             #endregion
 
