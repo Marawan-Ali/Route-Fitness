@@ -56,9 +56,21 @@ namespace GymSystemPL.Controllers
 
         #region Logout Action
 
+        [HttpPost]
+        public ActionResult Logout()
+        {
+            _signInManager.SignOutAsync().GetAwaiter().GetResult();
+            return RedirectToAction("Login");
+        }
+
         #endregion
 
         #region Access Denied Action
+
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
 
         #endregion    
     }
