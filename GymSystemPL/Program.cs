@@ -46,6 +46,9 @@ namespace GymSystemPL
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(Config =>
             {
                 Config.Password.RequiredLength = 6;
@@ -58,7 +61,7 @@ namespace GymSystemPL
             {
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
-            })
+            });
 
             var app = builder.Build();
 
@@ -94,12 +97,13 @@ namespace GymSystemPL
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
