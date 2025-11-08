@@ -11,7 +11,7 @@ namespace GymSystemDAL.Entities
         // CreatedAt Column in BaseEntity
         // Will be used as JoinDate for Member => Configurations
 
-        public string? Photo { get; set; }
+        public string Photo { get; set; } = null!;
 
         #region 1:1 RS Between Member HealthRecord
 
