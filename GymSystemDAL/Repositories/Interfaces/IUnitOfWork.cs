@@ -17,5 +17,6 @@ namespace GymSystemDAL.Repositories.Interfaces
         int SaveChanges();
 
         public ISessionRepository SessionRepository { get; }
+        public IMembershipRepository MembershipRepository { get; }
     }
 }

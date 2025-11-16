@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymSystemBLL.ViewModels.MembershipViewModels;
 using GymSystemBLL.ViewModels.SessionViewModels;
 using GymSystemDAL.Entities;
 using Microsoft.Extensions.Options;
@@ -21,8 +22,13 @@ namespace GymSystemBLL
                 .ForMember(dest => dest.TrainerName, Options => Options.MapFrom(src => src.SessionTrainer.Name))
                 .ForMember(dest => dest.AvailableSlots, Options => Options.Ignore());
         
-            CreateMap<CreateSessionViewModel, Session>();
+            CreateMap<CreateSessionViewModel, Session>().ReverseMap();
             CreateMap<UpdateSessionViewModel, Session>().ReverseMap();
+
+            CreateMap<Membership, MembershipViewModel>()
+                .ForMember(dest => dest.MemberName, Options => Options.MapFrom(src => src.Member.Name))
+                .ForMember(dest => dest.PlanName, Options => Options.MapFrom(src => src.Plan.Name))
+                .ForMember(dest => dest.StartDate, Options => Options.MapFrom(src => src.CreatedAt));
 
             CreateMap<Trainer, TrainerSelectViewModel>();
             CreateMap<Category, CategorySelectViewModel>()
