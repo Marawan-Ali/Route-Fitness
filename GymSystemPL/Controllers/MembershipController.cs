@@ -51,8 +51,31 @@ namespace GymSystemPL.Controllers
             }
             catch
             {
+                TempData["ErrorMessage"] = "Failed to create membership. Please try again.";
                 LoadDropdowns();
                 return View();
+            }
+        }
+
+        public ActionResult Cancel(int id)
+        {
+            try
+            {
+                var Result = _membershipService.DeleteMembership(id);
+                if (Result)
+                {
+                    TempData["SuccessMessage"] = "Membership deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to delete membership. Please try again.";
+                }
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the membership.";
+                return RedirectToAction("Index");
             }
         }
 

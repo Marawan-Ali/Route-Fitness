@@ -27,5 +27,11 @@ namespace GymSystemDAL.Repositories.Classes
 
             return memberships;
         }
+
+        public Membership? GetFirstOrDefault(Func<Membership, bool>? filter = null)
+        {
+            var membership = _dbContext.Memberships.FirstOrDefault(filter ?? (_ => true));
+            return membership;
+        }
     }
 }

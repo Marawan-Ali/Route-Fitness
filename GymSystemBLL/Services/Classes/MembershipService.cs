@@ -60,6 +60,16 @@ namespace GymSystemBLL.Services.Classes
             return memberViewModels;
         }
 
+        public bool DeleteMembership(int memberId)
+        {
+            var membershipRepo = _unitOfWork.MembershipRepository;
+            var membership = membershipRepo.GetFirstOrDefault(m=>m.MemberId == memberId && m.Status.ToLower() == "active");
+            if (membership is null)
+                return false;
+            membershipRepo.Delete(membership);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
         #region Helper Methods
 
         private bool IsMemberExists(int memberId)
