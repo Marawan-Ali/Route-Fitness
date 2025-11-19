@@ -38,7 +38,9 @@ namespace GymSystemBLL
 
             CreateMap<MemberSession, MemberForSessionViewModel>()
                 .ForMember(dest => dest.MemberName, Options => Options.MapFrom(src => src.Member.Name))
-                .ForMember(dest => dest.BookingDate, Options => Options.MapFrom(src => src.CreatedAt.ToString()));
+                .ForMember(dest => dest.BookingDate, Options => Options.MapFrom(src => src.CreatedAt));
+
+            CreateMap<CreateBookingViewModel, MemberSession>();
 
             CreateMap<Plan, PlanForSelectListViewModel>();
             CreateMap<Member, MemberForSelectListViewModel>();

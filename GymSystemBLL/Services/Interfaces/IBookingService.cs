@@ -1,4 +1,5 @@
 ﻿using GymSystemBLL.ViewModels.BookingViewModels;
+using GymSystemBLL.ViewModels.MembershipViewModels;
 using GymSystemBLL.ViewModels.SessionViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,9 @@ namespace GymSystemBLL.Services.Interfaces
         IEnumerable<MemberForSessionViewModel> GetAllMembersForSession(int id);
 
         MemberForSessionViewModel? MarkMemberAttendance(int memberId, int sessionId);
+
+        bool CreateBooking(CreateBookingViewModel model);
+
+        IEnumerable<MemberForSelectListViewModel> GetMembersForDropDown(int id);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using GymSystemBLL.Services.Interfaces;
 using GymSystemBLL.ViewModels.BookingViewModels;
+using GymSystemBLL.ViewModels.MembershipViewModels;
 using GymSystemBLL.ViewModels.SessionViewModels;
+using GymSystemDAL.Entities;
 using GymSystemDAL.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,38 @@ namespace GymSystemBLL.Services.Classes
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public bool CreateBooking(CreateBookingViewModel model)
+        {
+            var bookingRepository = _unitOfWork.BookingRepository;
+            var sessionRepository = _unitOfWork.SessionRepository;
+            var membershipRepository = _unitOfWork.MembershipRepository;
+            var session = sessionRepository.GetById(model.SessionId);
+            if (session == null || session.StartDate <= DateTime.UtcNow)
+            {
+                return false;
+            }
+            var activeMembership = membershipRepository.GetFirstOrDefault(m => m.Status.ToLower() == "Active".ToLower() && m.MemberId == model.MemberId);
+            if (activeMembership == null)
+            {
+                return false;
+            }
+            var bookedSlotsCount = sessionRepository.GetCountOfBookedSlots(model.SessionId);
+            if (bookedSlotsCount >= session.Capacity)
+            {
+                return false;
+            }
+            var existingBooking = bookingRepository.GetAll(b => b.SessionId == model.SessionId && b.MemberId == model.MemberId).FirstOrDefault();
+            if (existingBooking != null)
+            {
+                return false;
+            }
+            var bookingEntity = _mapper.Map<MemberSession>(model);
+            bookingEntity.CreatedAt = DateTime.Now;
+            bookingEntity.IsAttended = false;
+            bookingRepository.Add(bookingEntity);
+            return _unitOfWork.SaveChanges() > 0;
         }
 
         public IEnumerable<MemberForSessionViewModel> GetAllMembersForSession(int id)
@@ -57,5 +91,18 @@ namespace GymSystemBLL.Services.Classes
             }
             return null;
         }
+
+        #region Helper Methods
+
+        public IEnumerable<MemberForSelectListViewModel> GetMembersForDropDown(int id)
+        {
+            var bookingRepository = _unitOfWork.BookingRepository;
+            var bookings = bookingRepository.GetAll(b => b.Id == id).Select(m => m.MemberId).ToList();
+            var membersAvailableToBook = _unitOfWork.GetRepository<Member>().GetAll(m => !bookings.Contains(m.Id));
+            var memberViewModels = _mapper.Map<IEnumerable<MemberForSelectListViewModel>>(membersAvailableToBook);
+            return memberViewModels;
+        }
+
+        #endregion
     }
 }
