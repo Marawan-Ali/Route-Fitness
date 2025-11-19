@@ -12,6 +12,8 @@ namespace GymSystemBLL.Services.Interfaces
     {
         IEnumerable<SessionViewModel> GetAllSessionsWithTrainerAndCategories();
 
-        IEnumerable<MemberForSessionViewModel> GetAllMembersForUpcomingSessions(int id);
+        IEnumerable<MemberForSessionViewModel> GetAllMembersForSession(int id);
+
+        MemberForSessionViewModel? MarkMemberAttendance(int memberId, int sessionId);
     }
 }

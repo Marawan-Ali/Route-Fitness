@@ -10,5 +10,7 @@ namespace GymSystemBLL.ViewModels.BookingViewModels
     {
         public string MemberName { get; set; }
         public string BookingDate { get; set; }
+        public int MemberId { get; set; }
+        public bool isAttended { get; set; }
     }
 }

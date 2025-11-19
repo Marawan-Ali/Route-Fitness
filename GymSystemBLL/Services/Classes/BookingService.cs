@@ -22,7 +22,7 @@ namespace GymSystemBLL.Services.Classes
             _mapper = mapper;
         }
 
-        public IEnumerable<MemberForSessionViewModel> GetAllMembersForUpcomingSessions(int id)
+        public IEnumerable<MemberForSessionViewModel> GetAllMembersForSession(int id)
         {
             var bookingRepository = _unitOfWork.BookingRepository;
             var bookings = bookingRepository.GetSessionById(id);
@@ -40,6 +40,22 @@ namespace GymSystemBLL.Services.Classes
                 session.AvailableSlots = session.Capacity - sessionRepository.GetCountOfBookedSlots(session.Id);
             }
             return sessionViewModels;
+        }
+
+        public MemberForSessionViewModel? MarkMemberAttendance(int memberId, int sessionId)
+        {
+            var bookingRepository = _unitOfWork.BookingRepository;
+            var booking = bookingRepository.GetSessionById(sessionId)
+                                           .FirstOrDefault(ms => ms.MemberId == memberId);
+            if (booking != null)
+            {
+                booking.IsAttended = true;
+                bookingRepository.Update(booking);
+                _unitOfWork.SaveChanges();
+                var memberViewModel = _mapper.Map<MemberForSessionViewModel>(booking);
+                return memberViewModel;
+            }
+            return null;
         }
     }
 }

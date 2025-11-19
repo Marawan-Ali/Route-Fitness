@@ -1,4 +1,5 @@
 ﻿using GymSystemBLL.Services.Interfaces;
+using GymSystemDAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymSystemPL.Controllers
@@ -13,8 +14,21 @@ namespace GymSystemPL.Controllers
 
         public ActionResult GetMembersForUpcomingSession(int id)
         {
-            var members = _bookingService.GetAllMembersForUpcomingSessions(id);
+            var members = _bookingService.GetAllMembersForSession(id);
             return View(members);
+        }
+        public ActionResult GetMembersForOngoingSession(int id)
+        {
+            var members = _bookingService.GetAllMembersForSession(id);
+            ViewBag.SessionId = id;
+            return View(members);
+        }
+
+        [HttpPost]
+        public ActionResult MarkAttendance(int sessionId,int memberId)
+        {
+            _bookingService.MarkMemberAttendance(memberId, sessionId);
+            return RedirectToAction("GetMembersForOngoingSession", new { id = sessionId });
         }
     }
 }
