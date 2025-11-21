@@ -57,5 +57,20 @@ namespace GymSystemPL.Controllers
             }
             return RedirectToAction(nameof(GetMembersForUpcomingSession), new { id = model.SessionId });
         }
+
+        [HttpPost]
+        public ActionResult Cancel(int memberId, int sessionId)
+        {
+            var Result = _bookingService.DeleteBooking(memberId, sessionId);
+            if (Result)
+            {
+                TempData["SuccessMessage"] = "Booking Cancelled Successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed To Cancel Booking";
+            }
+            return RedirectToAction(nameof(GetMembersForUpcomingSession), new { id = sessionId });
+        }
     }
 }

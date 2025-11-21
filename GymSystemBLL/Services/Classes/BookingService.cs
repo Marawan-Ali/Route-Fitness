@@ -103,6 +103,18 @@ namespace GymSystemBLL.Services.Classes
             return memberViewModels;
         }
 
+        public bool DeleteBooking(int memberId, int sessionId)
+        {
+            var bookingRepository = _unitOfWork.BookingRepository;
+            var booking = bookingRepository.GetAll(b => b.MemberId == memberId && b.SessionId == sessionId).FirstOrDefault();
+            if (booking != null)
+            {
+                bookingRepository.Delete(booking);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            return false;
+        }
+
         #endregion
     }
 }

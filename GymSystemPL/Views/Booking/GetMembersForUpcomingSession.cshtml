@@ -56,7 +56,7 @@
                             <td>@item.BookingDate</td>
                             <td>
                                 <div class="d-flex justify-content-center gap-1">
-                                    <form method="post" href="memberSession/cancel" class="m-0">
+                                    <form method="post" asp-action="Cancel" asp-route-memberId="@item.MemberId" asp-route-sessionId="@ViewBag.sessionId" class="m-0">
                                         <button type="submit" class="btn btn-sm btn-danger"
                                                 onclick="return confirm('Are you sure you want to cancel this booking?');">
                                             <i class="fas fa-times"></i> Cancel
